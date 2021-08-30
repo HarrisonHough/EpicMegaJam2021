@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "CharacterBase.h"
 #include "DamageInterface.h"
 #include "PlayerCharacter.generated.h"
 
@@ -11,7 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthUpdated, float, HealthValue
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMemoryUpdated, float, MemoryValue);
 
 UCLASS()
-class EPICMEGAJAM2021_API APlayerCharacter : public ACharacter, public IDamageInterface
+class EPICMEGAJAM2021_API APlayerCharacter : public ACharacterBase, public IDamageInterface
 {
 	GENERATED_BODY()
 
@@ -35,10 +35,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 		FOnMemoryUpdated OnMemoryUpdated;
-
-	void MoveHorizontal(float inputValue);
-
-	void MoveVertical(float inputValue);
 
 	void ActionPressed();
 

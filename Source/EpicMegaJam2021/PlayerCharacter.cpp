@@ -14,11 +14,13 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	APlayerCharacter::SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
-	
-	APlayerCharacter::CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	//CameraComponent->AttachTo(springArmComponent);
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
+	SpringArmComponent->TargetArmLength = 0;
+	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 50.0f));
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	CameraComponent->AttachToComponent(APlayerCharacter::SpringArmComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	SpringArmComponent->UpdateChildTransforms();
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +36,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
+ //Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -42,29 +44,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// set up gameplay key bindings
 	check(InputComponent);
 
-	InputComponent->BindAxis("Horizontal", this, &APlayerCharacter::MoveHorizontal);
-	InputComponent->BindAxis("Vertical", this, &APlayerCharacter::MoveVertical);
-	InputComponent->BindAxis("MouseHorizontal", this, &APlayerCharacter::AddControllerYawInput);
-	InputComponent->BindAxis("MouseVertical", this, &APlayerCharacter::AddControllerPitchInput);
+	//InputComponent->BindAxis("Horizontal", this, &APlayerCharacter::MoveHorizontal);
+	//InputComponent->BindAxis("Vertical", this, &APlayerCharacter::MoveVertical);
+	//InputComponent->BindAxis("MouseHorizontal", this, &APlayerCharacter::AddControllerYawInput);
+	//InputComponent->BindAxis("MouseVertical", this, &APlayerCharacter::AddControllerPitchInput);
 
-	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &APlayerCharacter::Jump);
-	InputComponent->BindAction("Action", EInputEvent::IE_Pressed, this, &APlayerCharacter::ActionPressed);
-	InputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &APlayerCharacter::Shoot);
-}
-
-void APlayerCharacter::MoveHorizontal(float inputValue)
-{
-	FRotator NewRotator = FRotator::ZeroRotator;
-	NewRotator.Yaw = GetControlRotation().GetComponentForAxis(EAxis::Z);
-	AddMovementInput(UKismetMathLibrary::GetRightVector(NewRotator), inputValue);
-
-}
-
-void APlayerCharacter::MoveVertical(float inputValue)
-{
-	FRotator NewRotator = FRotator::ZeroRotator;
-	NewRotator.Yaw = GetControlRotation().GetComponentForAxis(EAxis::Z);
-	AddMovementInput(UKismetMathLibrary::GetForwardVector(NewRotator), inputValue);
+	//InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &APlayerCharacter::Jump);
+	//InputComponent->BindAction("Action", EInputEvent::IE_Pressed, this, &APlayerCharacter::ActionPressed);
+	//InputComponent->BindAction("Shoot", EInputEvent::IE_Pressed, this, &APlayerCharacter::Shoot);
 }
 
 void APlayerCharacter::ActionPressed()
